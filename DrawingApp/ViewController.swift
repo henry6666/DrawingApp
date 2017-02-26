@@ -37,6 +37,7 @@ class ViewController: UIViewController, UpdateSettingsDelegate {
                   (126,139,145),
                   (0,0,0)]
     
+        addEraser()
         
     }
     
@@ -97,6 +98,21 @@ class ViewController: UIViewController, UpdateSettingsDelegate {
         }
     }
     
+    func addEraser() {
+        let button : UIButton = UIButton.init(type: UIButtonType.custom)
+        button.setImage(UIImage(named: "eraser.png"), for: UIControlState.normal)
+        button.frame = CGRect(x: 0, y: 0, width: 53, height: 31)
+        button.addTarget(self, action: #selector(eraseFunction), for: UIControlEvents.touchUpInside)
+        let barBtn = UIBarButtonItem(customView: button)
+        
+        
+        toolBar.items?[1] = barBtn
+    
+    }
+    
+    func eraseFunction() {
+        (red, green, blue) = (1, 1, 1)
+    }
     func drawLines(from: CGPoint, to: CGPoint) {
         
         UIGraphicsBeginImageContext(padImageView.frame.size)

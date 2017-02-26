@@ -63,6 +63,7 @@ class SettingsViewController: UIViewController {
         blue = CGFloat(blueSlider.value)
         blueLabel.text = "Blue: " + String(format: "%d", Int(blueSlider.value * 255.0)) as String
 
+        drawPreview(imgView: brushImageView, width: brushWidth!)
         drawPreview(imgView: colorsImageView, width: 40.0)
     }
 

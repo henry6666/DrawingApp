@@ -37,11 +37,6 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="nMw-Ug-zsv"/>
-                                    <barButtonItem title="eraser" id="mum-8Q-6W3">
-                                        <connections>
-                                            <action selector="eraserAction:" destination="BYZ-38-t0r" id="7Jz-Ln-4Mb"/>
-                                        </connections>
-                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="kZw-ar-RjH"/>
                                     <barButtonItem systemItem="organize" id="Fsb-mF-5ok">
                                         <connections>
