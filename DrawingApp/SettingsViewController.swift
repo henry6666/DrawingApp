@@ -8,6 +8,12 @@
 
 import UIKit
 
+protocol UpdateSettingsDelegate: class {
+    
+    func updateSettings(_ settingsVC: SettingsViewController)
+}
+
+
 class SettingsViewController: UIViewController {
 
     // Labels
@@ -32,13 +38,20 @@ class SettingsViewController: UIViewController {
     var blue: CGFloat?
     var brushWidth: CGFloat?
     
+    var delegate: UpdateSettingsDelegate?
+    
     
     @IBAction func changeBrushWidth(_ sender: UISlider) {
         
+        if sender == brushSlider {
+            
+            brushWidth = CGFloat(sender.value * 50.0)
+            brushLabel.text = "brush: " + String(format: "%2i", Int(brushWidth!)) as String
         
+        }
+        drawPreview(imgView: brushImageView, width: brushWidth!)
     }
-    
-    
+ 
     @IBAction func changeColorAction(_ sender: UISlider) {
         
         red = CGFloat(redSlider.value)
@@ -59,10 +72,11 @@ class SettingsViewController: UIViewController {
     }
     
     @IBAction func saveSettingsAction(_ sender: UIBarButtonItem) {
+        
         dismiss(animated: true, completion: nil)
+        delegate?.updateSettings(self)
         
     }
-    
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -72,15 +86,13 @@ class SettingsViewController: UIViewController {
         drawPreview(imgView: brushImageView, width: brushWidth!)
         drawPreview(imgView: colorsImageView, width: 40.0)
         setSlidersValues()
-        
 
     }
     
     func drawPreview(imgView: UIImageView, width: CGFloat) {
         
         UIGraphicsBeginImageContext(CGSize(width: 70.0, height: 70.0))
-        
-        
+  
         let context = UIGraphicsGetCurrentContext()
         context?.move(to: CGPoint(x: 35.0, y: 35.0))
         context?.addLine(to: CGPoint(x: 35.0, y: 35.0))
@@ -98,7 +110,7 @@ class SettingsViewController: UIViewController {
     func setSlidersValues() {
         
         // brush
-        brushSlider.value = Float(brushWidth!)
+        brushSlider.value = Float(brushWidth! / 50)
         brushLabel.text = "brush: " + String(format: "%2i", Int(brushWidth!)) as String
         
         // colors
@@ -110,9 +122,7 @@ class SettingsViewController: UIViewController {
         
         blueSlider.value = Float(blue!)
         blueLabel.text = "Blue: " + String(format: "%d", Int(blueSlider.value * 255.0)) as String
-        
-        
-        
+     
     }
 
     /*

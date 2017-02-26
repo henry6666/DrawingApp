@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UpdateSettingsDelegate {
     
     @IBOutlet weak var padImageView: UIImageView!
     @IBOutlet weak var toolBar: UIToolbar!
@@ -116,11 +116,19 @@ class ViewController: UIViewController {
         UIGraphicsEndImageContext()
     }
     
+    func updateSettings(_ settingsVC: SettingsViewController) {
+        brushWidth = settingsVC.brushWidth!
+        red = settingsVC.red!
+        green = settingsVC.green!
+        blue = settingsVC.blue!
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         if segue.identifier == "goToSettings" {
             
             let settingsVC = segue.destination as! SettingsViewController
+            settingsVC.delegate = self
             settingsVC.brushWidth = brushWidth
             settingsVC.red = red
             settingsVC.green = green
