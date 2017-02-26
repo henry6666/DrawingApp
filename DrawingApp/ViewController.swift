@@ -9,17 +9,125 @@
 import UIKit
 
 class ViewController: UIViewController {
+    
+    @IBOutlet weak var padImageView: UIImageView!
+    @IBOutlet weak var toolBar: UIToolbar!
+    
+    var lastPoint = CGPoint.zero
+    var swiped:Bool = false
+    
+    var red: CGFloat = 0
+    var green: CGFloat = 0
+    var blue: CGFloat = 0
+    var brushWidth: CGFloat = 5.0
+    
+    var colors: [(CGFloat, CGFloat, CGFloat)] = [(CGFloat, CGFloat, CGFloat)]()
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        colors = [(240, 31, 36),
+                  (142,77,161),
+                  (249,195,7),
+                  (66,155,71),
+                  (43,180,235),
+                  (243,102,22),
+                  (82,45,26),
+                  (126,139,145),
+                  (0,0,0)]
+    
+        
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBAction func colorPickerAction(_ sender: UIButton) {
+        
+        (red, green, blue) = colors[sender.tag]
+        (red, green, blue) = (red / 255.0, green / 255.0, blue / 255.0)
+        
     }
-
-
+    
+    @IBAction func resetAction(_ sender: UIBarButtonItem) {
+        padImageView.image = nil
+    }
+    
+    @IBAction func eraserAction(_ sender: UIBarButtonItem) {
+        
+        (red, green, blue) = (1, 1, 1)
+    }
+    
+    @IBAction func settingsAction(_ sender: UIBarButtonItem) {
+        
+    }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        swiped = false
+        if let touch = touches.first {
+            lastPoint = touch.location(in: padImageView)
+            
+            print(lastPoint)
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        swiped = true
+        if let touch = touches.first {
+        
+            let currentpoint = touch.location(in: padImageView)
+            
+            // draw lines
+            drawLines(from: lastPoint, to: currentpoint)
+            lastPoint = currentpoint
+            
+            //print(lastPoint)
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        if !swiped {
+        
+            //draw line
+            
+            drawLines(from: lastPoint, to: lastPoint)
+            
+        }
+    }
+    
+    func drawLines(from: CGPoint, to: CGPoint) {
+        
+        UIGraphicsBeginImageContext(padImageView.frame.size)
+        padImageView.image?.draw(in: CGRect(x: 0, y: 0, width: padImageView.frame.width, height: padImageView.frame.height))
+        
+        let context = UIGraphicsGetCurrentContext()
+        context?.move(to: CGPoint(x: from.x, y: from.y))
+        context?.addLine(to: CGPoint(x: to.x, y: to.y))
+        
+        context?.setBlendMode(.normal)
+        context?.setLineCap(CGLineCap.round)
+        context?.setLineWidth(brushWidth)
+        context?.setStrokeColor(UIColor(red: red, green: green, blue: blue, alpha: 1.0).cgColor)
+        context?.strokePath()
+        
+        padImageView.image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == "goToSettings" {
+            
+            let settingsVC = segue.destination as! SettingsViewController
+            settingsVC.brushWidth = brushWidth
+            settingsVC.red = red
+            settingsVC.green = green
+            settingsVC.blue = blue
+            
+        }
+    }
+    
 }
 
